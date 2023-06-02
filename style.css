@@ -1,54 +1,70 @@
-@font-face {
-    font-family: proxima-nova;
-    src: url("assets/fonts/Proxima-Nova-Font.otf");
-}
-
 body {
-    background-color: #353441;
-    font-family: proxima-nova;
-    width:400px;
-    height:400px;
+  background-color: #dce4ee;
+  width: 450px;
+  height: 550px;
+  border-radius: 12px;
 }
 
 h1 {
-    color: #fff
+  text-align: center;
+  color: black;
 }
 
 .editable {
-    font-family: proxima-nova;
-    resize: none;
-    background-color: #454754;
-    color: #D1D5CA;
-    font-size: 3.75vh;
-    width: 94vw;
-    border: 0px;
-    border-radius: 2px;
-    padding: 1vw;
-    overflow-y: scroll;
+  resize: none;
+  background-color: #ffff;
+  color: black;
+  font-size: 2.75vh;
+  border: 0px solid;
+  border-radius: 12px;
+  padding: 0px 14px;
+  text-align: justify;
+  overflow-y: scroll;
 }
 
 .editable:empty:before {
-    content: attr(placeholder);
-    opacity: 0.5
+  content: attr(placeholder);
+  opacity: 0.5;
 }
 
 .editable::-webkit-scrollbar {
-    width: 0 !important
+  width: 0 !important;
 }
 
 #input {
-    height: 60px
+  height: 160px;
 }
 
 #output {
-    height: 270px;
+  text-align: center;
+  font-size: large;
+  background-color: #ffff;
+  height: 80px;
+  color: black;
+  border: 0px solid;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: auto;
+}
+
+.center:empty:before {
+  content: attr(placeholder);
+  opacity: 0.5;
+}
+
+.center::-webkit-scrollbar {
+  width: 0 !important;
 }
 
 a {
-    text-decoration: none;
-    color: #16e16e;
+  text-decoration: none;
+  color: #16e16e;
 }
 
 a:hover {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+p {
+  margin: 4px 0px;
 }

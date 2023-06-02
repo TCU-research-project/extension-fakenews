@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,11 +9,18 @@
 
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-    <h1>select-gpt</h1>
-    <div class="editable" contenteditable="false" id="input" placeholder="Loading..."></div><br/>
-    <div class="editable" contenteditable="false" id="output"></div>
+    <div style="text-align: center;">
+        <img src="/assets/icons/app-icon.png" alt="app icon" width="150">
+    </div>
+    <h2>Văn bản cần nhận diện</h2>
+    <div class="editable" contenteditable="false" id="input" placeholder="Loading..."></div>
+    <h2>Kết quả nhận diện</h2>
+    <div class="center" contenteditable="false" id="output">
+    </div>
 
     <script src="./popup.js"></script>
 </body>
+
 </html>

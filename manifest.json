@@ -1,12 +1,12 @@
 {
     "manifest_version": 3,
-    "name": "select-gpt",
-    "description": "A chrome extension that lets you select any text and run it through ChatGPT",
+    "name": "detect-fake-news",
+    "description": "Tien ich nhan dien fake news",
     "version": "1.0.0",
     "host_permissions": ["https://*.openai.com/"],
     "permissions": ["storage", "tabs"],
     "icons": {
-        "512": "assets/icons/hexagonal.png"
+        "512": "assets/icons/logo.png"
     },
     "action": {
         "default_popup": "popup.html"
