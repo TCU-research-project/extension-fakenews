@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     const getData = async (selection) => {
-        if (!selection.length == 0) {
+        if (!(selection?.length == 0)) {
             document.getElementById('input').style.opacity = 1;
             document.getElementById('input').innerHTML = "<p>" + selection + "</p>";
             document.getElementById('output').style.opacity = 1;
@@ -77,4 +77,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     getSelectedText();
+
 });

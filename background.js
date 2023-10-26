@@ -101,3 +101,35 @@ chrome.runtime.onConnect.addListener((port) => {
         }).catch((e) => port.postMessage(e))
     })
 })
+
+var contextMenuItem = {
+    id: "detect-news-context-menu",
+    title: "Nhận diện tin tức",
+    contexts: ["all"],
+}
+
+const getActiveTab = async () => {
+    const tabs = await chrome.tabs.query({
+        currentWindow: true,
+        active: true
+    });
+    return tabs[0];
+};
+
+chrome.contextMenus.create(contextMenuItem);
+
+chrome.contextMenus.onClicked.addListener(async (data) => {
+    console.log(data)
+
+    // do something with response here, not outside the function
+    if (data.menuItemId == "detect-news-context-menu" && data.selectionText) {
+        const activeTab = await getActiveTab();
+        const response = await chrome.tabs.sendMessage(activeTab.id, {greeting: "hello"});
+        chrome.runtime.lastError;
+        if (!(response?.length == 0)) {
+            console.log(response)
+        } else {
+            console.log(response);
+        }
+    }
+})

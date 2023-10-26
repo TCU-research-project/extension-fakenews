@@ -4,7 +4,7 @@
     "description": "Tien ich nhan dien fake news",
     "version": "1.0.0",
     "host_permissions": ["https://*.openai.com/"],
-    "permissions": ["storage", "tabs"],
+    "permissions": ["storage", "tabs", "contextMenus", "activeTab", "scripting"],
     "icons": {
         "512": "assets/icons/logo.png"
     },
@@ -16,8 +16,14 @@
     },
     "content_scripts": [
         {
-            "matches": ["http://*/*", "https://*/*"],
+            "matches": ["<all_urls>"],
             "js": ["contentScript.js"]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [ "assets/icons/fake-news.jpg", "assets/icons/true-news.jpg" ],
+            "matches": [ "<all_urls>" ]
         }
     ]
 }
