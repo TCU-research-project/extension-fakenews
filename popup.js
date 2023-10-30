@@ -53,18 +53,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById('input').style.opacity = 1;
             document.getElementById('input').innerHTML = "<p>" + selection + "</p>";
             document.getElementById('output').style.opacity = 1;
-            document.getElementById('output').innerHTML = `
+
+            const port = chrome.runtime.connect();
+            port.postMessage({ question: selection });
+            port.onMessage.addListener((msg) => {
+                const detectContent = msg === 'Fake' ? `
                 <img src = "/assets/icons/fake-news.jpg" alt = "fake-news" width = "40">
                 <p> Đây là fake news</p>
+            ` : `
+                <img src = "/assets/icons/true-news.jpg" alt = "fake-news" width = "40">
+                <p> Đây là true news</p>
             `;
-            // document.getElementById('output').innerHTML = `
-            //     <img src = "/assets/icons/true-news.jpg" alt = "fake-news" width = "40">
-            //     <p> Đây là true news</p>
-            // `;
-
-
-            // port.postMessage({ question: selection });
-            // port.onMessage.addListener((msg) => showPopup(msg));
+                document.getElementById('output').innerHTML = detectContent;
+            });
         } else {
             document.getElementById('input').style.opacity = 0.5;
             document.getElementById('input').innerHTML = "Vui lòng lựa chọn đoạn văn bản cần nhận diện";
@@ -77,5 +78,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     getSelectedText();
-
 });

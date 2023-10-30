@@ -1,53 +1,53 @@
 const uid = () => {
-	const generateNumber = (limit) => {
-	   const value = limit * Math.random();
-	   return value | 0;
-	}
-	const generateX = () => {
-		const value = generateNumber(16);
-		return value.toString(16);
-	}
-	const generateXes = (count) => {
-		let result = '';
-		for(let i = 0; i < count; ++i) {
-			result += generateX();
-		}
-		return result;
-	}
-	const generateconstant = () => {
-		const value = generateNumber(16);
-		const constant =  (value & 0x3) | 0x8;
-		return constant.toString(16);
-	}
-    
-	const generate = () => {
-  	    const result = generateXes(8)
-  	         + '-' + generateXes(4)
-  	         + '-' + '4' + generateXes(3)
-  	         + '-' + generateconstant() + generateXes(3)
-  	         + '-' + generateXes(12)
-  	    return result;
-	};
-    return generate()
+    const generateNumber = (limit) => {
+        const value = limit * Math.random();
+        return value | 0;
+    };
+    const generateX = () => {
+        const value = generateNumber(16);
+        return value.toString(16);
+    };
+    const generateXes = (count) => {
+        let result = '';
+        for (let i = 0; i < count; ++i) {
+            result += generateX();
+        }
+        return result;
+    };
+    const generateconstant = () => {
+        const value = generateNumber(16);
+        const constant = (value & 0x3) | 0x8;
+        return constant.toString(16);
+    };
+
+    const generate = () => {
+        const result = generateXes(8)
+            + '-' + generateXes(4)
+            + '-' + '4' + generateXes(3)
+            + '-' + generateconstant() + generateXes(3)
+            + '-' + generateXes(12);
+        return result;
+    };
+    return generate();
 };
 
 const getToken = async () => {
     return new Promise(async (resolve, reject) => {
-        const resp = await fetch("https://chat.openai.com/api/auth/session")
+        const resp = await fetch("https://chat.openai.com/api/auth/session");
         if (resp.status === 403) {
-            reject('CLOUDFLARE')
+            reject('CLOUDFLARE');
         }
         try {
-            const data = await resp.json()
+            const data = await resp.json();
             if (!data.accessToken) {
-                reject('ERROR')
+                reject('ERROR');
             }
-            resolve(data.accessToken)
+            resolve(data.accessToken);
         } catch (err) {
-            reject('ERROR')
+            reject('ERROR');
         }
-    })
-}
+    });
+};
 
 const getResponse = async (question) => {
     return new Promise(async (resolve, reject) => {
@@ -74,39 +74,54 @@ const getResponse = async (question) => {
                     model: "text-davinci-002-render",
                     parent_message_id: uid()
                 })
-            })   
-            resolve(res.body)
+            });
+            resolve(res.body);
         } catch (e) {
             if (e === "CLOUDFLARE") {
-                reject("CLOUDFLARE")
+                reject("CLOUDFLARE");
             } else {
-                reject("ERROR")
+                reject("ERROR");
             }
         }
-    })
-}
+    });
+};
 
 chrome.runtime.onConnect.addListener((port) => {
-    port.onMessage.addListener((msg) => {
-        const question = msg.question
-        getResponse(question).then(async answer => {
-            const resRead = answer.getReader()
-            while (true) {
-                const {done, value} = await resRead.read()
-                if (done) break
-                if (done === undefined || value === undefined) port.postMessage('ERROR')
-                const data = new TextDecoder().decode(value)
-                port.postMessage(data)
-            }
-        }).catch((e) => port.postMessage(e))
-    })
-})
+    port.onMessage.addListener(async (msg) => {
+        const question = msg.question;
+        try {
+            const res = await fetch(`http://localhost:8000/detect-fake-news?news=${question}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const resJson = await res.json();
+            // while (true) {
+            // }
+            port.postMessage(resJson.msg);
+
+        } catch (e) {
+            port.postMessage(e);
+        }
+        // getResponse(question).then(async answer => {
+        //     const resRead = answer.getReader();
+        //     while (true) {
+        //         const { done, value } = await resRead.read();
+        //         if (done) break;
+        //         if (done === undefined || value === undefined) port.postMessage('ERROR');
+        //         const data = new TextDecoder().decode(value);
+        //         port.postMessage(data);
+        //     }
+        // }).catch((e) => port.postMessage(e));
+    });
+});
 
 var contextMenuItem = {
     id: "detect-news-context-menu",
     title: "Nhận diện tin tức",
     contexts: ["all"],
-}
+};
 
 const getActiveTab = async () => {
     const tabs = await chrome.tabs.query({
@@ -119,17 +134,24 @@ const getActiveTab = async () => {
 chrome.contextMenus.create(contextMenuItem);
 
 chrome.contextMenus.onClicked.addListener(async (data) => {
-    console.log(data)
+    console.log(data);
 
     // do something with response here, not outside the function
     if (data.menuItemId == "detect-news-context-menu" && data.selectionText) {
         const activeTab = await getActiveTab();
-        const response = await chrome.tabs.sendMessage(activeTab.id, {greeting: "hello"});
+        const res = await fetch(`http://localhost:8000/detect-fake-news?news=${data.selectionText}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        const resJson = await res.json();
+        const response = await chrome.tabs.sendMessage(activeTab.id, { greeting: "hello", resultDetect: resJson.msg });
         chrome.runtime.lastError;
         if (!(response?.length == 0)) {
-            console.log(response)
+            console.log(response);
         } else {
             console.log(response);
         }
     }
-})
+});
